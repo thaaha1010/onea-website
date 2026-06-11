@@ -19,7 +19,7 @@ backend:
   repo: thaaha1010/onea-website
   branch: main
   auth_type: pkce
-  app_id: YOUR_GITHUB_CLIENT_ID
+  app_id: Ov23lihcstlNrivjZAeC
 
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
