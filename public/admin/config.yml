@@ -1,0 +1,135 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Decap CMS — PKCE auth (no proxy server needed, works directly on Cloudflare)
+# ─────────────────────────────────────────────────────────────────────────────
+#
+# SETUP:
+#   1. Go to https://github.com/settings/applications/new
+#   2. Fill in:
+#        Application name:      ONEA CMS
+#        Homepage URL:          https://onea-website.pages.dev
+#        Authorization callback URL: https://onea-website.pages.dev/admin/
+#   3. Click "Register application"
+#   4. Copy the "Client ID" (NOT the secret — PKCE doesn't need it)
+#   5. Replace YOUR_GITHUB_CLIENT_ID below with that Client ID
+#   6. Save, commit, push — the CMS will work immediately
+# ─────────────────────────────────────────────────────────────────────────────
+
+backend:
+  name: github
+  repo: thaaha1010/onea-website
+  branch: main
+  auth_type: pkce
+  app_id: YOUR_GITHUB_CLIENT_ID
+
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+site_url: https://onea-website.pages.dev
+display_url: https://onea-website.pages.dev
+
+locale: en
+
+collections:
+
+  # ── SITE SETTINGS ──────────────────────────────────────────────────────────
+  - name: "site-settings"
+    label: "Site Settings"
+    files:
+      - name: "site"
+        label: "General Settings"
+        file: "src/content/settings/site.json"
+        format: "json"
+        fields:
+          - { label: "Tagline", name: "tagline", widget: "string" }
+          - { label: "WhatsApp Number", name: "whatsapp", widget: "string", hint: "Include country code, e.g. +9601234567" }
+          - { label: "Instagram URL", name: "instagram", widget: "string", required: false, default: "" }
+          - { label: "Facebook URL", name: "facebook", widget: "string", required: false, default: "" }
+          - { label: "TikTok URL", name: "tiktok", widget: "string", required: false, default: "" }
+          - { label: "YouTube URL", name: "youtube", widget: "string", required: false, default: "" }
+          - { label: "Twitter / X URL", name: "twitter", widget: "string", required: false, default: "" }
+          - { label: "Contact Email", name: "email", widget: "string", required: false, default: "" }
+          - { label: "Contact Phone", name: "phone", widget: "string", required: false, default: "" }
+          - { label: "Address", name: "address", widget: "string", required: false, default: "" }
+          - { label: "Google Maps Embed URL", name: "mapsEmbed", widget: "string", required: false, default: "" }
+
+  # ── HOME PAGE ──────────────────────────────────────────────────────────────
+  - name: "home-page"
+    label: "Home Page"
+    files:
+      - name: "home"
+        label: "Home Page Content"
+        file: "src/content/pages/home.json"
+        format: "json"
+        fields:
+          - { label: "Hero Title", name: "heroTitle", widget: "string" }
+          - { label: "Hero Subtitle", name: "heroSubtitle", widget: "text" }
+          - { label: "Hero CTA Button Text", name: "heroCta", widget: "string" }
+          - { label: "Hero Background Image", name: "heroImage", widget: "image", required: false, default: "" }
+          - { label: "Who We Are Text", name: "whoWeAre", widget: "text" }
+          - name: "stats"
+            label: "Stats"
+            widget: "list"
+            summary: "{{fields.label}}: {{fields.value}}"
+            fields:
+              - { label: "Label", name: "label", widget: "string" }
+              - { label: "Value", name: "value", widget: "string" }
+
+  # ── ABOUT PAGE ─────────────────────────────────────────────────────────────
+  - name: "about-page"
+    label: "About Page"
+    files:
+      - name: "about"
+        label: "About Page Content"
+        file: "src/content/pages/about.json"
+        format: "json"
+        fields:
+          - { label: "Hero Background Image", name: "heroImage", widget: "image", required: false, default: "" }
+          - { label: "Mission Statement", name: "mission", widget: "text" }
+          - { label: "Vision Statement", name: "vision", widget: "text" }
+          - { label: "Our Story", name: "story", widget: "markdown" }
+          - { label: "Story Image", name: "storyImage", widget: "image", required: false, default: "" }
+          - name: "team"
+            label: "Team Members"
+            widget: "list"
+            summary: "{{fields.name}} — {{fields.role}}"
+            fields:
+              - { label: "Full Name", name: "name", widget: "string" }
+              - { label: "Role / Title", name: "role", widget: "string" }
+              - { label: "Photo", name: "photo", widget: "image", required: false, default: "" }
+              - { label: "Short Bio", name: "bio", widget: "text", required: false, default: "" }
+
+  # ── GALLERY ALBUMS ─────────────────────────────────────────────────────────
+  - name: "gallery"
+    label: "Gallery Albums"
+    folder: "src/content/gallery"
+    create: true
+    format: "json"
+    slug: "{{slug}}"
+    summary: "{{title}} ({{date}})"
+    fields:
+      - { label: "Album Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "date", format: "YYYY-MM-DD" }
+      - { label: "Short Description", name: "description", widget: "text", required: false }
+      - { label: "Cover Photo", name: "coverPhoto", widget: "image" }
+      - name: "photos"
+        label: "Photos"
+        widget: "list"
+        allow_add: true
+        field: { label: "Photo", name: "photo", widget: "image" }
+
+  # ── ACTIVITIES ─────────────────────────────────────────────────────────────
+  - name: "activities"
+    label: "Activities"
+    folder: "src/content/activities"
+    create: true
+    format: "frontmatter"
+    slug: "{{slug}}"
+    summary: "{{title}} ({{date}}) — {{status}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "date", format: "YYYY-MM-DD" }
+      - { label: "Location", name: "location", widget: "string", required: false }
+      - { label: "Status", name: "status", widget: "select", options: ["upcoming", "completed"], default: "upcoming" }
+      - { label: "Cover Image", name: "coverImage", widget: "image", required: false }
+      - { label: "Short Description (for cards)", name: "description", widget: "text" }
+      - { label: "Full Description", name: "body", widget: "markdown" }

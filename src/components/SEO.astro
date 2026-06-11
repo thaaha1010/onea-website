@@ -1,0 +1,37 @@
+---
+export interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+}
+
+const {
+  title,
+  description = 'ONEA — Nature · Empowerment · Advancement. A youth and community association based in the Maldives.',
+  image = '/images/logo.png',
+} = Astro.props;
+
+const siteUrl = import.meta.env.SITE || 'https://onea.mv';
+const fullTitle = title === 'ONEA' ? 'ONEA — Nature · Empowerment · Advancement' : `${title} | ONEA`;
+const ogImage = image.startsWith('http') ? image : `${siteUrl}${image}`;
+const canonicalUrl = Astro.url.href;
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalUrl} />
+
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="ONEA" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<link rel="icon" type="image/png" href="/images/logo.png" />
+<link rel="apple-touch-icon" href="/images/logo.png" />

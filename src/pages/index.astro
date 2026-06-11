@@ -1,0 +1,283 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import siteSettings from '../content/settings/site.json';
+import homeContent from '../content/pages/home.json';
+
+const allActivities = await getCollection('activities');
+const latestActivities = [...allActivities]
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  .slice(0, 3);
+
+const allAlbums = await getCollection('gallery');
+const galleryPreviews: { src: string; albumId: string; albumTitle: string }[] = [];
+const sortedAlbums = [...allAlbums].sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+for (const album of sortedAlbums) {
+  for (const photo of album.data.photos) {
+    galleryPreviews.push({ src: photo, albumId: album.id.replace(/\.json$/, ''), albumTitle: album.data.title });
+    if (galleryPreviews.length >= 6) break;
+  }
+  if (galleryPreviews.length >= 6) break;
+}
+
+const pillars = [
+  {
+    title: 'Nature First',
+    desc: 'Protecting and restoring the unique ecosystems of the Maldives for future generations.',
+    icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/>',
+  },
+  {
+    title: 'Community Power',
+    desc: 'Uniting people across islands and atolls through shared purpose and collective action.',
+    icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"/>',
+  },
+  {
+    title: 'Youth Leadership',
+    desc: 'Equipping young Maldivians with the skills, confidence, and tools to lead real change.',
+    icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/>',
+  },
+  {
+    title: 'Sustainable Future',
+    desc: 'Building lasting environmental and social solutions for a resilient Maldives.',
+    icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418"/>',
+  },
+];
+
+const cardPalette = [
+  { bg: '#1a4a2e', text: '#fff', sub: 'rgba(255,255,255,0.65)' },
+  { bg: '#3a1f0d', text: '#fff', sub: 'rgba(255,255,255,0.65)' },
+  { bg: '#5c3d2e', text: '#fff', sub: 'rgba(255,255,255,0.65)' },
+];
+
+const socials = [
+  { label: 'Instagram', url: siteSettings.instagram },
+  { label: 'Facebook', url: siteSettings.facebook },
+  { label: 'TikTok', url: siteSettings.tiktok },
+  { label: 'YouTube', url: siteSettings.youtube },
+  { label: 'Twitter / X', url: siteSettings.twitter },
+].filter(s => s.url);
+---
+
+<BaseLayout title="ONEA" description={homeContent.heroSubtitle}>
+
+  <!-- ─── HERO ─── -->
+  <section class="relative min-h-svh flex items-center justify-center overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      {homeContent.heroImage ? (
+        <img src={homeContent.heroImage} alt="" class="w-full h-full object-cover" />
+      ) : (
+        <div class="w-full h-full" style="background: linear-gradient(145deg, #0d2818 0%, #1a4a2e 45%, #2d6a4f 75%, #3a1f0d 100%);"></div>
+      )}
+      <div class="absolute inset-0" style="background: radial-gradient(ellipse at 80% 20%, rgba(196,168,120,0.12) 0%, transparent 60%), radial-gradient(ellipse at 10% 80%, rgba(90,60,30,0.25) 0%, transparent 50%);"></div>
+      <div class="absolute inset-0 bg-black/35"></div>
+    </div>
+
+    <div class="relative z-10 text-center px-4 max-w-4xl mx-auto py-24">
+      <div class="flex justify-center mb-8">
+        <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden flex items-center justify-center shadow-2xl" style="border:3px solid rgba(196,168,120,0.6); background-color:rgba(255,255,255,0.1);">
+          <img src="/images/logo.png" alt="ONEA Logo" class="w-full h-full object-cover"
+            onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\'color:white;font-weight:900;font-size:1.5rem;\'>ONEA</span>'" />
+        </div>
+      </div>
+
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-5 leading-tight tracking-tight" style="color:#f5ede0;">
+        {homeContent.heroTitle}
+      </h1>
+      <p class="text-lg sm:text-xl mb-10 leading-relaxed max-w-2xl mx-auto" style="color:rgba(232,213,176,0.85);">
+        {homeContent.heroSubtitle}
+      </p>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/about" class="inline-block font-bold px-9 py-4 rounded-full text-base transition-all duration-300 hover:scale-105 hover:shadow-2xl shadow-lg" style="background-color:#c4a878; color:#1a1a1a;">
+          {homeContent.heroCta}
+        </a>
+        <a href="/activities" class="inline-block font-semibold px-9 py-4 rounded-full text-base transition-all duration-300" style="border:2px solid rgba(196,168,120,0.5); color:rgba(232,213,176,0.9);"
+          onmouseover="this.style.borderColor='#c4a878';this.style.color='#c4a878';"
+          onmouseout="this.style.borderColor='rgba(196,168,120,0.5)';this.style.color='rgba(232,213,176,0.9)';">
+          Our Activities
+        </a>
+      </div>
+    </div>
+
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce" style="color:rgba(196,168,120,0.6);">
+      <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ─── WHO WE ARE ─── -->
+  <section class="py-20 sm:py-24" style="background-color:#f5ede0;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="reveal">
+          <span class="inline-block text-xs font-bold uppercase tracking-widest mb-4 px-3 py-1 rounded-full" style="background-color:#ece0cc; color:#5c3d2e;">Who We Are</span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold leading-tight mb-6" style="color:#0d2818;">About ONEA</h2>
+          <p class="text-base leading-relaxed mb-8" style="color:#5c4a3a;">{homeContent.whoWeAre}</p>
+          <a href="/about" class="inline-flex items-center gap-2 font-semibold text-sm" style="color:#1a4a2e;"
+            onmouseover="this.style.textDecoration='underline';" onmouseout="this.style.textDecoration='';">
+            Learn more about us
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+            </svg>
+          </a>
+        </div>
+        <div class="reveal reveal-delay-1 grid grid-cols-2 gap-3">
+          {homeContent.stats.map((stat, i) => {
+            const palettes = [
+              {bg:'#1a4a2e', val:'#c4a878', lbl:'rgba(255,255,255,0.7)'},
+              {bg:'#3a1f0d', val:'#c4a878', lbl:'rgba(255,255,255,0.7)'},
+              {bg:'#c4a878', val:'#1a4a2e', lbl:'#5c3d2e'},
+              {bg:'#ece0cc', val:'#1a4a2e', lbl:'#5c3d2e'},
+            ];
+            const p = palettes[i % palettes.length];
+            return (
+              <div class="rounded-2xl p-6 flex flex-col items-center justify-center text-center" style={`background-color:${p.bg};`}>
+                <p class="text-3xl sm:text-4xl font-extrabold" style={`color:${p.val};`}>{stat.value}</p>
+                <p class="text-xs font-medium uppercase tracking-wider mt-2" style={`color:${p.lbl};`}>{stat.label}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── PILLARS (dark green card, like reference) ─── -->
+  <section class="py-10 sm:py-12" style="background-color:#ece0cc;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="rounded-3xl p-8 sm:p-12" style="background-color:#1a4a2e;">
+        <p class="text-center text-xs font-bold uppercase tracking-widest mb-10" style="color:#c4a878;">What Drives Us</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {pillars.map((p, i) => (
+            <div class={`reveal reveal-delay-${i + 1} flex flex-col items-center text-center`}>
+              <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-4" style="background-color:rgba(196,168,120,0.15);">
+                <svg class="w-7 h-7" style="color:#c4a878;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" set:html={p.icon}></svg>
+              </div>
+              <h3 class="font-bold text-base mb-2" style="color:#f5ede0;">{p.title}</h3>
+              <p class="text-sm leading-relaxed" style="color:rgba(232,213,176,0.65);">{p.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FEATURED ACTIVITIES (earthy colored cards) ─── -->
+  {latestActivities.length > 0 && (
+    <section class="py-20 sm:py-24" style="background-color:#f5ede0;">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12 reveal">
+          <span class="inline-block text-xs font-bold uppercase tracking-widest mb-3 px-3 py-1 rounded-full" style="background-color:#ece0cc; color:#5c3d2e;">What We Do</span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold mt-3" style="color:#0d2818;">Featured Activities</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {latestActivities.map((activity, i) => {
+            const slug = activity.id.replace(/\.md$/, '');
+            const c = cardPalette[i % cardPalette.length];
+            return (
+              <a
+                href={`/activities/${slug}`}
+                class={`reveal reveal-delay-${i + 1} group rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl block`}
+                style={`background-color:${c.bg};`}
+              >
+                {activity.data.coverImage ? (
+                  <div class="aspect-video overflow-hidden relative">
+                    <img src={activity.data.coverImage} alt={activity.data.title}
+                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                    <div class="absolute inset-0 bg-black/20"></div>
+                  </div>
+                ) : (
+                  <div class="aspect-video flex items-center justify-center" style="background-color:rgba(0,0,0,0.15);">
+                    <svg class="w-14 h-14" style={`color:${c.sub};`} fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5z"/>
+                    </svg>
+                  </div>
+                )}
+                <div class="p-6">
+                  <div class="flex items-center justify-between mb-3">
+                    <p class="text-xs font-medium" style={`color:${c.sub};`}>{activity.data.date}</p>
+                    <span class="px-2.5 py-1 rounded-full text-xs font-bold" style="background-color:rgba(196,168,120,0.25); color:#c4a878;">
+                      {activity.data.status === 'upcoming' ? 'Upcoming' : 'Completed'}
+                    </span>
+                  </div>
+                  <h3 class="text-base font-bold leading-snug mb-2" style={`color:${c.text};`}>{activity.data.title}</h3>
+                  {activity.data.description && (
+                    <p class="text-sm line-clamp-2 leading-relaxed" style={`color:${c.sub};`}>{activity.data.description}</p>
+                  )}
+                  <div class="flex items-center gap-1 mt-4 text-xs font-semibold" style="color:#c4a878;">
+                    Read more
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+                    </svg>
+                  </div>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+
+        <div class="text-center mt-12">
+          <a href="/activities" class="inline-block font-bold px-8 py-3.5 rounded-full text-sm transition-all duration-300 hover:scale-105"
+            style="border:2px solid #1a4a2e; color:#1a4a2e;"
+            onmouseover="this.style.backgroundColor='#1a4a2e';this.style.color='white';"
+            onmouseout="this.style.backgroundColor='';this.style.color='#1a4a2e';">
+            View All Activities
+          </a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- ─── GALLERY PREVIEW ─── -->
+  {galleryPreviews.length > 0 && (
+    <section class="py-20 sm:py-24" style="background-color:#ece0cc;">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12 reveal">
+          <span class="inline-block text-xs font-bold uppercase tracking-widest mb-3 px-3 py-1 rounded-full" style="background-color:#e0d0b8; color:#5c3d2e;">Our Moments</span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold mt-3" style="color:#0d2818;">Gallery Highlights</h2>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {galleryPreviews.map((photo, i) => (
+            <a href={`/gallery/${photo.albumId}`}
+              class={`reveal reveal-delay-${(i % 3) + 1} group aspect-square overflow-hidden rounded-2xl block relative`}
+              style="background-color:#d4c4a8;">
+              <img src={photo.src} alt={photo.albumTitle}
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+              <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-300"></div>
+            </a>
+          ))}
+        </div>
+        <div class="text-center mt-12">
+          <a href="/gallery" class="inline-block font-bold px-8 py-3.5 rounded-full text-sm transition-all duration-300 hover:scale-105"
+            style="border:2px solid #1a4a2e; color:#1a4a2e;"
+            onmouseover="this.style.backgroundColor='#1a4a2e';this.style.color='white';"
+            onmouseout="this.style.backgroundColor='';this.style.color='#1a4a2e';">
+            View Full Gallery
+          </a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- ─── SOCIAL BAR ─── -->
+  {socials.length > 0 && (
+    <section class="py-14" style="background-color:#0d2818;">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <p class="text-xs mb-6 font-semibold uppercase tracking-widest" style="color:#c4a878;">Follow Us</p>
+        <div class="flex justify-center gap-6 flex-wrap">
+          {socials.map(s => (
+            <a href={s.url} target="_blank" rel="noopener noreferrer" class="text-sm font-medium transition-colors" style="color:#a89880;"
+              onmouseover="this.style.color='#c4a878';" onmouseout="this.style.color='#a89880';">
+              {s.label}
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+</BaseLayout>

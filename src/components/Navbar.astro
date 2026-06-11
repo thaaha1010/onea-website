@@ -1,0 +1,112 @@
+---
+import siteSettings from '../content/settings/site.json';
+
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/about', label: 'About Us' },
+  { href: '/activities', label: 'Activities' },
+  { href: '/gallery', label: 'Gallery' },
+  { href: '/contact', label: 'Contact Us' },
+];
+
+const current = Astro.url.pathname;
+function isActive(href: string) {
+  if (href === '/') return current === '/';
+  return current === href || current.startsWith(href + '/');
+}
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md shadow-sm" style="background-color:rgba(245,237,224,0.97);">
+  <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+
+      <a href="/" class="flex items-center gap-3 shrink-0">
+        <div class="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center" style="background-color:#1a4a2e;">
+          <img
+            src="/images/logo.png"
+            alt="ONEA"
+            class="w-full h-full object-cover"
+            onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\'color:white;font-weight:900;font-size:10px;\'>ONEA</span>'"
+          />
+        </div>
+        <div class="hidden sm:block leading-none">
+          <span class="font-extrabold text-lg tracking-tight" style="color:#1a4a2e;">ONEA</span>
+          <p class="text-[10px] tracking-widest uppercase mt-px" style="color:#c4a878;">{siteSettings.tagline}</p>
+        </div>
+      </a>
+
+      <ul class="hidden md:flex items-center gap-1">
+        {navLinks.map(link => (
+          <li>
+            <a
+              href={link.href}
+              class:list={[
+                'px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200',
+                isActive(link.href)
+                  ? 'text-white shadow-sm'
+                  : 'hover:text-white'
+              ]}
+              style={isActive(link.href)
+                ? 'background-color:#1a4a2e; color:white;'
+                : 'color:#3a2f27;'}
+              onmouseover={!isActive(link.href) ? "this.style.backgroundColor='#1a4a2e';this.style.color='white';" : ''}
+              onmouseout={!isActive(link.href) ? "this.style.backgroundColor='';this.style.color='#3a2f27';" : ''}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <button
+        id="nav-toggle"
+        class="md:hidden p-2 rounded-lg transition-colors"
+        style="color:#1a4a2e;"
+        aria-label="Toggle navigation"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+      >
+        <svg id="icon-menu" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+        <svg id="icon-close" class="w-6 h-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <div id="mobile-nav" class="hidden md:hidden pb-3 border-t mt-1 pt-2" style="border-color:#e8dcc8;">
+      <ul class="flex flex-col gap-0.5">
+        {navLinks.map(link => (
+          <li>
+            <a
+              href={link.href}
+              class="block px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200"
+              style={isActive(link.href)
+                ? 'background-color:#1a4a2e; color:white;'
+                : 'color:#3a2f27;'}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<div class="h-16" aria-hidden="true"></div>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const mobileNav = document.getElementById('mobile-nav');
+  const iconMenu = document.getElementById('icon-menu');
+  const iconClose = document.getElementById('icon-close');
+  toggle?.addEventListener('click', () => {
+    const open = !mobileNav?.classList.contains('hidden');
+    mobileNav?.classList.toggle('hidden', open);
+    iconMenu?.classList.toggle('hidden', !open);
+    iconClose?.classList.toggle('hidden', open);
+    toggle.setAttribute('aria-expanded', String(!open));
+  });
+</script>

@@ -1,0 +1,13 @@
+{
+  "heroTitle": "Empowering Youth Through Nature",
+  "heroSubtitle": "Connecting communities, protecting our islands, and building a brighter future for the Maldives.",
+  "heroCta": "Discover Our Story",
+  "heroImage": "",
+  "whoWeAre": "ONEA is a youth-led community association rooted in the Maldives. We believe in the power of nature to inspire, the strength of community to transform, and the potential of every young person to lead meaningful change. Through events, education, and environmental action, we are building a movement that matters.",
+  "stats": [
+    { "label": "Active Members", "value": "120+" },
+    { "label": "Events Held", "value": "45+" },
+    { "label": "Years Active", "value": "5+" },
+    { "label": "Atolls Reached", "value": "8+" }
+  ]
+}

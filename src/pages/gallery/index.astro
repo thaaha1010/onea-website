@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allAlbums = await getCollection('gallery');
+const albums = [...allAlbums].sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+---
+
+<BaseLayout title="Gallery" description="Browse ONEA's photo gallery — moments from our events and programs across the Maldives.">
+
+  <section class="relative h-52 sm:h-64 flex items-center justify-center overflow-hidden">
+    <div class="absolute inset-0" style="background: linear-gradient(145deg, #0d2818, #1a4a2e, #3a1f0d);"></div>
+    <div class="absolute inset-0 bg-black/30"></div>
+    <div class="relative z-10 text-center px-4">
+      <h1 class="text-3xl sm:text-5xl font-extrabold" style="color:#f5ede0;">Gallery</h1>
+      <p class="mt-3 text-sm sm:text-base" style="color:rgba(196,168,120,0.85);">Capturing moments, preserving memories</p>
+    </div>
+  </section>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20" style="background-color:#f5ede0;">
+    {albums.length === 0 ? (
+      <div class="text-center py-24">
+        <p class="text-lg" style="color:#a89880;">No albums yet. Check back soon!</p>
+      </div>
+    ) : (
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {albums.map((album, i) => {
+          const albumSlug = album.id.replace(/\.json$/, '');
+          return (
+            <a href={`/gallery/${albumSlug}`}
+              class={`reveal reveal-delay-${(i % 3) + 1} group rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl block`}
+              style="background-color:#fff;">
+              <div class="aspect-video overflow-hidden relative" style="background-color:#ece0cc;">
+                <img src={album.data.coverPhoto} alt={album.data.title}
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors duration-300"></div>
+                <div class="absolute bottom-3 right-3 px-2.5 py-1 rounded-full text-xs font-semibold backdrop-blur-sm" style="background-color:rgba(0,0,0,0.5); color:#c4a878;">
+                  {album.data.photos.length} photo{album.data.photos.length !== 1 ? 's' : ''}
+                </div>
+              </div>
+              <div class="p-5">
+                <p class="text-xs mb-1" style="color:#a89880;">{album.data.date}</p>
+                <h3 class="text-base font-bold leading-snug" style="color:#1a1a1a;">{album.data.title}</h3>
+                {album.data.description && <p class="text-sm mt-2 line-clamp-2 leading-relaxed" style="color:#6b5a4a;">{album.data.description}</p>}
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    )}
+  </div>
+</BaseLayout>

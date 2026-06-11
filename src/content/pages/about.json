@@ -1,0 +1,33 @@
+{
+  "heroImage": "",
+  "mission": "To empower youth and communities in the Maldives through nature-based initiatives, education, and collective action — fostering environmental stewardship and sustainable development.",
+  "vision": "A Maldives where every young person is inspired and equipped to protect nature, strengthen communities, and build a sustainable future for generations to come.",
+  "story": "ONEA was founded by a group of passionate young Maldivians who saw the urgent need for grassroots environmental and community action. What started as a small weekend cleanup initiative in Malé quickly grew into a nationwide movement, bringing together students, professionals, and community leaders united by a shared love for the Maldives and a commitment to positive change.\n\nToday, ONEA runs programs spanning environmental conservation, youth leadership development, and community empowerment across multiple atolls. Our activities range from coral reef monitoring and beach cleanups to youth leadership workshops and cultural preservation projects.",
+  "storyImage": "",
+  "team": [
+    {
+      "name": "Ahmed Ali",
+      "role": "President",
+      "photo": "",
+      "bio": "Environmental advocate and community leader with 8 years of grassroots organizing experience."
+    },
+    {
+      "name": "Fathimath Laila",
+      "role": "Vice President",
+      "photo": "",
+      "bio": "Marine biologist and passionate ocean conservationist."
+    },
+    {
+      "name": "Ibrahim Hassan",
+      "role": "Secretary General",
+      "photo": "",
+      "bio": "Youth development specialist and program coordinator."
+    },
+    {
+      "name": "Aminath Sara",
+      "role": "Treasurer",
+      "photo": "",
+      "bio": "Finance professional committed to sustainable community investment."
+    }
+  ]
+}
